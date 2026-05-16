@@ -13,15 +13,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copiar archivos del proyecto
 COPY . .
 
+# Crear .env desde .env.example si no existe
+RUN cp .env.example .env
+
 # Instalar dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Generar key si no existe
+# Generar APP_KEY
 RUN php artisan key:generate --force
-
-# Cachear configuración
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
 
 EXPOSE 10000
 
